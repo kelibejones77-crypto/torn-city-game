@@ -1,0 +1,844 @@
+I'll create a fully playable Torn City replica for you. Here's the complete game with all functional features:
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Torn City Replica - Full Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #fff;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c2c2c 0%, #3d3d3d 100%);
+            padding: 15px 20px;
+            border-bottom: 3px solid #ff6b6b;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ff6b6b;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .user-stats {
+            display: flex;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .stat {
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid #ff6b6b;
+            padding: 8px 15px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+
+        .stat:hover {
+            background: rgba(255, 107, 107, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .admin-badge {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 107, 107, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); }
+        }
+
+        .navigation {
+            background: #333;
+            padding: 0;
+            border-bottom: 1px solid #555;
+            overflow-x: auto;
+        }
+
+        .nav-tabs {
+            display: flex;
+            min-width: max-content;
+        }
+
+        .nav-tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            border: none;
+            background: #333;
+            color: #fff;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            white-space: nowrap;
+            position: relative;
+        }
+
+        .nav-tab:hover {
+            background: #444;
+            color: #ff6b6b;
+        }
+
+        .nav-tab.active {
+            background: #444;
+            border-bottom-color: #ff6b6b;
+            color: #ff6b6b;
+        }
+
+        .main-container {
+            display: flex;
+            min-height: calc(100vh - 140px);
+        }
+
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #2c2c2c 0%, #1a1a1a 100%);
+            padding: 20px;
+            border-right: 1px solid #444;
+            overflow-y: auto;
+        }
+
+        .content {
+            flex: 1;
+            padding: 25px;
+            background: #1a1a1a;
+            overflow-y: auto;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: linear-gradient(135deg, #2c2c2c 0%, #3d3d3d 100%);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid #444;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .card h3 {
+            color: #ff6b6b;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #444;
+            padding-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .button {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .button:hover {
+            background: linear-gradient(45deg, #ff5252, #ff6b6b);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .button:active {
+            transform: translateY(0);
+        }
+
+        .button.secondary {
+            background: linear-gradient(45deg, #666, #777);
+        }
+
+        .button.secondary:hover {
+            background: linear-gradient(45deg, #777, #888);
+            box-shadow: 0 5px 15px rgba(119, 119, 119, 0.4);
+        }
+
+        .button.success {
+            background: linear-gradient(45deg, #4CAF50, #66BB6A);
+        }
+
+        .button.warning {
+            background: linear-gradient(45deg, #FF9800, #FFB74D);
+        }
+
+        .button.danger {
+            background: linear-gradient(45deg, #F44336, #EF5350);
+        }
+
+        .input {
+            background: #333;
+            border: 2px solid #555;
+            color: #fff;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin: 5px;
+            transition: border-color 0.3s;
+            width: 100%;
+        }
+
+        .input:focus {
+            outline: none;
+            border-color: #ff6b6b;
+            box-shadow: 0 0 10px rgba(255, 107, 107, 0.3);
+        }
+
+        .progress-bar {
+            background: #333;
+            height: 25px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 15px 0;
+            position: relative;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #ff6b6b, #ff8e8e);
+            height: 100%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: bold;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .list-item {
+            background: #333;
+            padding: 18px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+        }
+
+        .list-item:hover {
+            background: #444;
+            border-left-color: #ff6b6b;
+            transform: translateX(5px);
+        }
+
+        .admin-panel {
+            position: fixed;
+            top: 0;
+            right: -450px;
+            width: 450px;
+            height: 100vh;
+            background: linear-gradient(180deg, #1a1a1a 0%, #2c2c2c 100%);
+            border-left: 3px solid #ff6b6b;
+            padding: 25px;
+            transition: right 0.4s ease;
+            z-index: 1000;
+            overflow-y: auto;
+            box-shadow: -5px 0 20px rgba(0,0,0,0.5);
+        }
+
+        .admin-panel.open {
+            right: 0;
+        }
+
+        .admin-toggle {
+            position: fixed;
+            top: 50%;
+            right: 15px;
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1001;
+            width: 60px;
+            height: 60px;
+            font-size: 20px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .admin-toggle:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #2c2c2c 0%, #3d3d3d 100%);
+            margin: 5% auto;
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 15px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid #444;
+        }
+
+        .close {
+            float: right;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #ff6b6b;
+            transition: color 0.3s;
+        }
+
+        .close:hover {
+            color: #ff8e8e;
+        }
+
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+        }
+
+        .inventory-item {
+            background: #333;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .inventory-item:hover {
+            background: #444;
+            border-color: #ff6b6b;
+            transform: translateY(-3px);
+        }
+
+        .chat-container {
+            height: 450px;
+            background: #333;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #444;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid #555;
+            gap: 10px;
+        }
+
+        .chat-input input {
+            flex: 1;
+            margin: 0;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #4CAF50, #66BB6A);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            z-index: 3000;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.4s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            max-width: 300px;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .notification.error {
+            background: linear-gradient(45deg, #F44336, #EF5350);
+        }
+
+        .notification.warning {
+            background: linear-gradient(45deg, #FF9800, #FFB74D);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .stat-card {
+            background: #333;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #444;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            background: #444;
+            border-color: #ff6b6b;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-bottom: 10px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #333;
+            border-radius: 50%;
+            border-top-color: #ff6b6b;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                order: 2;
+            }
+            
+            .content {
+                order: 1;
+            }
+            
+            .admin-panel {
+                width: 100%;
+                right: -100%;
+            }
+            
+            .user-stats {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            
+            .stat {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+        }
+
+        .game-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .game-logo h1 {
+            font-size: 48px;
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .welcome-card {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+            color: white;
+            text-align: center;
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">TORN CITY <span class="admin-badge">ADMIN MODE</span></div>
+        <div class="user-stats">
+            <div class="stat">Level: <span id="playerLevel">100</span></div>
+            <div class="stat">Energy: <span id="playerEnergy">∞</span></div>
+            <div class="stat">Money: $<span id="playerMoney">999,999,999</span></div>
+            <div class="stat">Respect: <span id="playerRespect">999,999</span></div>
+            <div class="stat">Health: <span id="playerHealth">100%</span></div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="navigation">
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('home')">🏠 Home</button>
+            <button class="nav-tab" onclick="switchTab('crimes')">🔫 Crimes</button>
+            <button class="nav-tab" onclick="switchTab('gym')">💪 Gym</button>
+            <button class="nav-tab" onclick="switchTab('items')">🎒 Items</button>
+            <button class="nav-tab" onclick="switchTab('city')">🏙️ City</button>
+            <button class="nav-tab" onclick="switchTab('job')">💼 Job</button>
+            <button class="nav-tab" onclick="switchTab('faction')">👥 Faction</button>
+            <button class="nav-tab" onclick="switchTab('travel')">✈️ Travel</button>
+            <button class="nav-tab" onclick="switchTab('newspaper')">📰 News</button>
+            <button class="nav-tab" onclick="switchTab('jail')">🔒 Jail</button>
+            <button class="nav-tab" onclick="switchTab('hospital')">🏥 Hospital</button>
+            <button class="nav-tab" onclick="switchTab('casino')">🎰 Casino</button>
+            <button class="nav-tab" onclick="switchTab('racing')">🏎️ Racing</button>
+            <button class="nav-tab" onclick="switchTab('missions')">📋 Missions</button>
+            <button class="nav-tab" onclick="switchTab('chat')">💬 Chat</button>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="card">
+                <h3>⚡ Quick Actions</h3>
+                <button class="button" onclick="showModal('attackModal')">⚔️ Attack Player</button>
+                <button class="button" onclick="showModal('messageModal')">📧 Send Message</button>
+                <button class="button" onclick="showModal('tradeModal')">🔄 Trade Items</button>
+                <button class="button secondary" onclick="showModal('profileModal')">👤 View Profile</button>
+                <button class="button success" onclick="healFully()">❤️ Full Heal</button>
+                <button class="button warning" onclick="addMoney()">💰 Add Money</button>
+            </div>
+            
+            <div class="card">
+                <h3>🌐 Online Players (<span id="onlineCount">0</span>)</h3>
+                <div id="onlinePlayers"></div>
+            </div>
+
+            <div class="card">
+                <h3>📊 Quick Stats</h3>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalStats">3,999,996</div>
+                    <div>Total Battle Stats</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content">
+            <!-- Home Tab -->
+            <div id="home" class="tab-content active">
+                <div class="welcome-card">
+                    <h1>Welcome Back, Admin!</h1>
+                    <p>You have unlimited access to all game features with no restrictions.</p>
+                </div>
+                
+                <div class="grid">
+                    <div class="card">
+                        <h3>⚡ Your Status</h3>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 100%">Energy: ∞ (Unlimited)</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 100%">Health: 100% (Perfect)</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 100%">Happiness: 100% (Maxed)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>📈 Recent Activity</h3>
+                        <div id="recentActivity"></div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>🎉 Current Events</h3>
+                        <div id="events"></div>
+                    </div>
+
+                    <div class="card">
+                        <h3>🏆 Achievements</h3>
+                        <div id="achievements"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Crimes Tab -->
+            <div id="crimes" class="tab-content">
+                <div class="card">
+                    <h3>🔫 Commit Crimes (No Cooldowns)</h3>
+                    <div class="grid">
+                        <div class="list-item">
+                            <div>
+                                <strong>🗑️ Search the Bins</strong>
+                                <br><small>Easy crime, low reward</small>
+                            </div>
+                            <button class="button" onclick="commitCrime('bins')">Commit</button>
+                        </div>
+                        <div class="list-item">
+                            <div>
+                                <strong>🛍️ Shoplift</strong>
+                                <br><small>Steal from stores</small>
+                            </div>
+                            <button class="button" onclick="commitCrime('shoplift')">Commit</button>
+                        </div>
+                        <div class="list-item">
+                            <div>
+                                <strong>👤 Pickpocket Someone</strong>
+                                <br><small>Steal from pedestrians</small>
+                            </div>
+                            <button class="button" onclick="commitCrime('pickpocket')">Commit</button>
+                        </div>
+                        <div class="list-item">
+                            <div>
+                                <strong>🏠 Larceny</strong>
+                                <br><small>Break into houses</small>
+                            </div>
+                            <button class="button" onclick="commitCrime('larceny')">Commit</button>
+                        </div>
+                        <div class="list-item">
+                            <div>
+                                <strong>🔫 Armed Robbery</strong>
+                                <br><small>Rob with weapons</small>
+                            </div>
+                            <button class="button" onclick="commitCrime('robbery')">Commit</button>
+                        </div>
+                        <div class="list-item">
+                            <div>
+                                <strong>🚗 Grand Theft Auto</strong>
+                                <br><small>Steal expensive cars</small>
+                            </div>
+                            <button class="button" onclick="commitCrime('gta')">Commit</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>📊 Crime Statistics</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="crimesCommitted">1,337</div>
+                            <div>Total Crimes</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="crimeSuccess">98.5%</div>
+                            <div>Success Rate</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="crimeEarnings">$50M</div>
+                            <div>Total Earnings</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gym Tab -->
+            <div id="gym" class="tab-content">
+                <div class="card">
+                    <h3>💪 Train Your Stats (Instant Results)</h3>
+                    <div class="grid">
+                        <div class="card">
+                            <h3>💪 Strength: <span id="strength">999,999</span></h3>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%">Maxed Out</div>
+                            </div>
+                            <button class="button" onclick="trainStat('strength')">Train Strength</button>
+                        </div>
+                        <div class="card">
+                            <h3>🛡️ Defense: <span id="defense">999,999</span></h3>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%">Maxed Out</div>
+                            </div>
+                            <button class="button" onclick="trainStat('defense')">Train Defense</button>
+                        </div>
+                        <div class="card">
+                            <h3>⚡ Speed: <span id="speed">999,999</span></h3>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%">Maxed Out</div>
+                            </div>
+                            <button class="button" onclick="trainStat('speed')">Train Speed</button>
+                        </div>
+                        <div class="card">
+                            <h3>🎯 Dexterity: <span id="dexterity">999,999</span></h3>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%">Maxed Out</div>
+                            </div>
+                            <button class="button" onclick="trainStat('dexterity')">Train Dexterity</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>🏋️ Gym Equipment</h3>
+                    <div class="list-item">
+                        <span>🏃 Treadmill - Speed Training</span>
+                        <button class="button" onclick="useEquipment('treadmill')">Use</button>
+                    </div>
+                    <div class="list-item">
+                        <span>🏋️ Weights - Strength Training</span>
+                        <button class="button" onclick="useEquipment('weights')">Use</button>
+                    </div>
+                    <div class="list-item">
+                        <span>🥊 Punching Bag - Defense Training</span>
+                        <button class="button" onclick="useEquipment('punching_bag')">Use</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Items Tab -->
+            <div id="items" class="tab-content">
+                <div class="card">
+                    <h3>🎒 Your Inventory</h3>
+                    <div class="inventory-grid" id="inventory"></div>
+                </div>
+                
+                <div class="card">
+                    <h3>🛒 Item Market</h3>
+                    <div id="itemMarket"></div>
+                </div>
+
+                <div class="card">
+                    <h3>⚔️ Equipped Items</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">Admin Rifle</div>
+                            <div>Primary Weapon</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">Admin Armor</div>
+                            <div>Body Armor</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- City Tab -->
+            <div id="city" class="tab-content">
+                <div class="grid">
+                    <div class="card">
+                        <h3>🏙️ City Locations</h3>
+                        <button class="button" onclick="visitLocation('bank')">🏦 Bank</button>
+                        <button class="button" onclick="visitLocation('shop')">🛍️ Shop</button>
+                        <button class="button" onclick="visitLocation('estate')">🏠 Estate Agent</button>
+                        <button class="button" onclick="visitLocation('church')">⛪ Church</button>
+                        <button class="button" onclick="visitLocation('museum')">🏛️ Museum</button>
+                        <button class="button" onclick="visitLocation('library')">📚 Library</button>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>📍 Current Location</h3>
+                        <p id="currentLocation">🏙️ Torn City Center</p>
+                        <p>You can travel anywhere instantly with admin privileges.</p>
+                    </div>
+
+                    <div class="card">
+                        <h3>🏪 Businesses</h3>
+                        <div class="list-item">
+                            <span>💊 Pharmacy</span>
+                            <button class="button" onclick="visitBusiness('pharmacy')">Visit</button>
+                        </div>
+                        <div class="list-item">
+                            <span>🔫 Gun Shop</span>
+                            <button class="button" onclick="visitBusiness('gunshop')">Visit</button>
+                        </div>
+                        <div class="list-item">
+                            <span>🍺 Bar</span>
+                            <button class="button" onclick="visitBusiness('bar')">Visit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Job Tab -->
+            <div id="job" class="tab-content">
+                <div class="card">
+                    <h3>💼 Your Job</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">CEO</div>
+                            <div>Position</div>
+                        </div>
+                        <div class="stat-
